@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>TechiePWA</title>
+    <meta name="theme-color" content="#2F3BA2"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="styles/bootstrap.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">TechiePWA</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse">
+
+            <a class="btn btn-outline-success my-2 my-sm-0" href="">Read Tutorial</a>
+
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col" id="postsDiv">
+
+
+            </div>
+        </div>
+    </div>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/sw.js').then(function (r) {
+                    console.log('Service worker successfully registered!');
+                }).catch(function (e) {
+                    console.log('Service worker failed to register', e);
+                });
+            });
+        }
+    </script>
+    <script>
+    let posts;
+    document.body.onload = async (e) =>{
+        console.log("document loaded!");
+        posts = await fetch("https://www.techiediaries.com/api/feed.json").then(function(response) {
+            return response.json();
+        });
+        posts.forEach(element => {
+            let child = document.createElement('div');
+            //child.classList.add('card');
+            //child.classList.add('text-white');
+            //child.classList.add('bg-dark');
+            child.classList.add('mt-1');
+            ['card','text-dark','border-danger','bg-light','p-1','text-center'].forEach((v)=>{
+                child.classList.add(v);
+            })
+            
+
+            child.innerHTML = `
+            <div class="card-body">
+                <h2 class="card-title">${element.title}</h2>
+                <p class="card-text">${element.excerpt}</p>
+                <div class="card-footer">
+                    <a href="${element.url}" class="card-link">Read</a>
+                    <a href="#" class="card-link">Save to read offline</a>
+                </div>
+                
+            </div>
+            `
+
+            document.getElementById("postsDiv").appendChild(child);
+        });
+
+    }
+
+
+    </script>
+</body>
+
+</html>
